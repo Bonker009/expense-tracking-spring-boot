@@ -1,2 +1,7 @@
-package org.example.miniprojectspring.exception;public class CustomNotFoundException {
+package org.example.miniprojectspring.exception;
+
+public class CustomNotFoundException extends Exception{
+    public CustomNotFoundException(String message){
+        super(message);
+    }
 }
