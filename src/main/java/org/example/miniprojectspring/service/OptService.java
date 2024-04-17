@@ -5,8 +5,9 @@ import org.example.miniprojectspring.model.entity.OptsDTO;
 import java.util.Optional;
 
 public interface OptService {
-    public Optional<OptsDTO> findById(Integer id);
+    Optional<OptsDTO> findById(Integer id);
 
     void save(OptsDTO optsDTO);
-    String findByCode(String code);
+    Optional<OptsDTO> findByCode(String code);
+    void uploadOpt(String optCode);
 }

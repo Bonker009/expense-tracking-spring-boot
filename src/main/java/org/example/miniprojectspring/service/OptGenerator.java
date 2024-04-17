@@ -7,12 +7,13 @@ import org.example.miniprojectspring.repository.OneTimePasswordRepository;
 
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class OptGenerator {
 
 
-    public static OptsDTO generateOTP(Integer length, Integer userId) {
+    public static OptsDTO generateOTP(Integer length, UUID userId) {
         final long expiryInterval = 5L * 60 * 1000;
         Random random = new Random();
         StringBuilder otp = new StringBuilder();

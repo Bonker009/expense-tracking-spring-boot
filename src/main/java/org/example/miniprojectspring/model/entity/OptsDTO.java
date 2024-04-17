@@ -15,5 +15,5 @@ public class OptsDTO {
     private Date issuedDate;
     private Date expiration;
     private boolean verify;
-    private Integer userId;
+    private UUID userId;
 }

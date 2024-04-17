@@ -25,6 +25,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
+import java.util.Optional;
 
 @RequestMapping("/api/v1/auths")
 @RestController
@@ -42,7 +44,18 @@ public class AuthController {
 
     @PutMapping("/verify")
     public String verify(@RequestBody String OptCode) {
-        optService.findByCode(OptCode);
+        Optional<OptsDTO> optional = optService.findByCode(OptCode);
+        optional.ifPresent(c -> {
+            String verificationResult;
+            if (c.getExpiration().before(new Date())) {
+                verificationResult = "failed";
+            } else {
+                verificationResult = "ok";
+                c.setVerify(true);
+
+                optService.uploadOpt(OptCode);
+            }
+        });
         return "verify";
     }
 

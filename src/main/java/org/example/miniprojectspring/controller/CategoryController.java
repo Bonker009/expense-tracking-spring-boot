@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class CategoryController {
     @GetMapping
     public String getCategory() {
-        return "get all category";
+        return "Hello";
     }
 
     @GetMapping("/{id}")

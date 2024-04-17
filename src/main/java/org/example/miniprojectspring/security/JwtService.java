@@ -4,14 +4,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.example.miniprojectspring.model.entity.AppUserDTO;
+import org.example.miniprojectspring.model.entity.CustomUserDetail;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
@@ -19,14 +18,15 @@ public class JwtService {
     public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60; //5 hour
     public static final String SECRET = "3445f76b8b7c0ff73d2f38a33a6c3b9b59b9d5e0ff9460b9935ab56dbc888c64";
 
-    private String createToken(Map<String, Object> claim, String subject) {
+    private String createToken(Map<String, Object> claims, UserDetails userDetails) {
         return Jwts.builder()
-                .setClaims(claim)
-                .setSubject(subject)
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
+
 
     private Key getSignKey() {
         byte[] keyBytes = Base64.getDecoder().decode(SECRET);
@@ -34,9 +34,38 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        System.out.println(userDetails + " UserDetail");
+        String userIdFromUserDetail = String.valueOf(getUserIdFromUserDetails(userDetails));
+        String profileImageFromUserDetail = getProfileImageFromUserDetails(userDetails);
+
+        System.out.println(userIdFromUserDetail + "UserDetail Customer");
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        claims.put("userId", userIdFromUserDetail);
+        claims.put("profileImage", profileImageFromUserDetail);
+
+
+        return createToken(claims, userDetails);
     }
+
+    private UUID getUserIdFromUserDetails(UserDetails userDetails) {
+        if (userDetails instanceof CustomUserDetail customUserDetail) {
+            AppUserDTO appUserDTO = customUserDetail.getAppUserDTO();
+            if (appUserDTO != null) {
+                return appUserDTO.getUserId();
+            }
+        }
+        return null;
+    }
+    private String getProfileImageFromUserDetails(UserDetails userDetails) {
+        if (userDetails instanceof CustomUserDetail customUserDetail) {
+            AppUserDTO appUserDTO = customUserDetail.getAppUserDTO();
+            if (appUserDTO != null) {
+                return appUserDTO.getProfileImage();
+            }
+        }
+        return null;
+    }
+
 
     private Claims extractAllClaim(String token) {
         return Jwts.parserBuilder()

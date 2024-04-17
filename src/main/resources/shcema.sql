@@ -37,7 +37,7 @@ CREATE TABLE Otps
     id         SERIAL       NOT NULL UNIQUE,
     otp_id     uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
     opt_code   VARCHAR(255) NOT NULL,
-    issued_at  TIMESTAMP    NOT NULL,
+    issued_at  TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     expiration TIMESTAMP    NOT NULL,
     verified   BOOLEAN      NOT NULL,
     user_id    uuid,

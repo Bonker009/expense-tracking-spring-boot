@@ -9,7 +9,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppUserDTO{
-    private Integer userId;
+    private UUID userId;
     private String email;
     private String password;
     private String profileImage;
