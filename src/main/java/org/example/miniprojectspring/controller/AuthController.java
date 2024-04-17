@@ -1,16 +1,19 @@
 package org.example.miniprojectspring.controller;
 
+import jakarta.mail.MessagingException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.BadRequestException;
 import org.example.miniprojectspring.model.entity.AppUserDTO;
+import org.example.miniprojectspring.model.entity.OptsDTO;
 import org.example.miniprojectspring.model.request.AppUserRequest;
 import org.example.miniprojectspring.model.request.AuthRequest;
 import org.example.miniprojectspring.model.response.ApiResponse;
 import org.example.miniprojectspring.model.response.AuthResponse;
 import org.example.miniprojectspring.security.JwtService;
 import org.example.miniprojectspring.service.AppUserService;
-import org.example.miniprojectspring.service.MailSenderService;
+import org.example.miniprojectspring.service.EmailService;
 import org.example.miniprojectspring.service.OptGenerator;
+import org.example.miniprojectspring.service.OptService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,6 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @RequestMapping("/api/v1/auths")
 @RestController
 @AllArgsConstructor
@@ -30,11 +35,14 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
 
-    private final MailSenderService mailSenderService;
+    private final EmailService emailService;
+    private final OptService optService;
+
 
 
     @PutMapping("/verify")
-    public String verify() {
+    public String verify(@RequestBody String OptCode) {
+        optService.findByCode(OptCode);
         return "verify";
     }
 
@@ -49,13 +57,21 @@ public class AuthController {
     }
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody AppUserRequest appUserRequest) {
+    public ResponseEntity<?> register(@RequestBody AppUserRequest appUserRequest) throws MessagingException, IOException {
         String encodedPassword = passwordEncoder.encode(appUserRequest.getPassword());
         appUserRequest.setPassword(encodedPassword);
         AppUserDTO appUserDTO = appUserService.createUser(appUserRequest);
-
-        ApiResponse<AppUserDTO> response = ApiResponse.<AppUserDTO>builder().message("Successfully Registered").code(201).
-                status(HttpStatus.CREATED).payload(appUserDTO).build();
+        System.out.println(appUserDTO);
+        OptsDTO optsDTO = OptGenerator.generateOTP(6,appUserDTO.getUserId());
+        optService.save(optsDTO);
+        String optsGenerated = emailService.sendEmail(appUserRequest.getEmail(),optsDTO.getOptCode());
+        System.out.println(optsGenerated);
+        ApiResponse<AppUserDTO> response = ApiResponse.<AppUserDTO>builder()
+                .message("Successfully Registered")
+                .code(201)
+                .status(HttpStatus.CREATED)
+                .payload(appUserDTO)
+                .build();
         System.out.println(appUserDTO);
         return ResponseEntity.ok(response);
     }
@@ -67,26 +83,23 @@ public class AuthController {
         final UserDetails userDetails = appUserService.loadUserByUsername(authRequest.getEmail());
         final String token = jwtService.generateToken(userDetails);
         AuthResponse authResponse = new AuthResponse(token);
-        mailSenderService.sendEmail(authRequest.getEmail(),OptGenerator.generateOTP(6));
+
         return ResponseEntity.ok(authResponse);
     }
 
     private void authenticate(String email, String password) throws Exception {
         try {
             UserDetails userDetails = appUserService.loadUserByUsername(email);
-            System.out.println("UserDetail : " + userDetails);
+//            System.out.println("UserDetail : " + userDetails);
             if (userDetails == null) {
                 throw new BadRequestException("User not found");
             }
-            System.out.println("UserDetail is not null");
-            System.out.println("Password : " + password);
-            System.out.println("UserDetail password : " + userDetails.getPassword());
+
             System.out.println(passwordEncoder.matches(password, userDetails.getPassword()));
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
                 throw new BadCredentialsException("Invalid password");
             }
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            System.out.println("Seyha");
         } catch (DisabledException e) {
             throw new Exception("User disabled", e);
         } catch (BadCredentialsException e) {

@@ -12,12 +12,12 @@ public interface AppUserRepository {
             @Result(property = "profileImage", column = "profile_image")
     })
     @Select("""
-            INSERT INTO users  VALUES (DEFAULT,#{user.email} , #{user.password},#{user.profileImage}) RETURNING *
+            INSERT INTO users  VALUES (DEFAULT,DEFAULT,#{user.email} , #{user.password},#{user.profileImage}) RETURNING *
             """)
     AppUserDTO saveUser(@Param("user") AppUserRequest appUserRequest);
 
     @Select("""
-                    SELECT * FROM users WHERE email = #{email}
+            SELECT * FROM users WHERE email = #{email}
             """)
 //    @ResultMap("AppUserMapping")
     AppUser findByEmail(@Param("email") String email);

@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
+
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AppUserDTO{
+@NoArgsConstructor
+public class OptsDTO {
+    private String optCode;
+    private Date issuedDate;
+    private Date expiration;
+    private boolean verify;
     private Integer userId;
-    private String email;
-    private String password;
-    private String profileImage;
 }
