@@ -1,7 +1,7 @@
-package org.example.miniprojectspring.service;
+package org.example.miniprojectspring.service.ServiceImplementation;
 
 import org.example.miniprojectspring.model.entity.AppUser;
-import org.example.miniprojectspring.model.entity.AppUserDTO;
+import org.example.miniprojectspring.model.dto.AppUserDTO;
 import org.example.miniprojectspring.model.entity.CustomUserDetail;
 import org.example.miniprojectspring.model.request.AppUserRequest;
 import org.example.miniprojectspring.repository.AppUserRepository;
@@ -9,6 +9,8 @@ import org.example.miniprojectspring.service.AppUserService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class AppUserServiceImpl implements AppUserService {
@@ -28,4 +30,6 @@ public class AppUserServiceImpl implements AppUserService {
     public AppUserDTO createUser(AppUserRequest appUserRequest) {
         return appUserRepository.saveUser(appUserRequest);
     }
+
+
 }

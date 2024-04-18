@@ -1,8 +1,7 @@
 package org.example.miniprojectspring.repository;
 
 import org.apache.ibatis.annotations.*;
-import org.example.miniprojectspring.model.entity.OptsDTO;
-import org.springframework.stereotype.Repository;
+import org.example.miniprojectspring.model.dto.OptsDTO;
 
 import java.util.Optional;
 

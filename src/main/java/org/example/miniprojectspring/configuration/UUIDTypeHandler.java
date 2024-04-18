@@ -1,21 +1,15 @@
-package org.example.miniprojectspring.exception;
-
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.UUID;
+package org.example.miniprojectspring.configuration;
 
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.MappedTypes;
 
-// no @MappedJdbcTypes
-@MappedTypes(UUID.class)
-public class UuidTypeHandler extends BaseTypeHandler<UUID> {
+import java.sql.*;
+import java.util.UUID;
+
+public class UUIDTypeHandler extends BaseTypeHandler<UUID> {
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, UUID parameter, JdbcType jdbcType) throws SQLException {
-        ps.setObject(i, parameter); // no 3rd arg
+        ps.setObject(i, parameter, Types.OTHER);
     }
 
     @Override

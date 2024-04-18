@@ -1,5 +1,6 @@
-package org.example.miniprojectspring.service;
+package org.example.miniprojectspring.service.ServiceImplementation;
 
+import org.example.miniprojectspring.service.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;

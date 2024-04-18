@@ -1,9 +1,7 @@
 package org.example.miniprojectspring.service;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.example.miniprojectspring.model.entity.OptsDTO;
-import org.example.miniprojectspring.repository.OneTimePasswordRepository;
+import org.example.miniprojectspring.model.dto.OptsDTO;
 
 import java.util.Date;
 import java.util.Random;

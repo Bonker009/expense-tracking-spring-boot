@@ -3,6 +3,7 @@ package org.example.miniprojectspring.model.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.miniprojectspring.model.dto.AppUserDTO;
 
 import java.util.Date;
 import java.util.UUID;
@@ -15,6 +16,6 @@ public class Expense {
     private double amount;
     private String description;
     private Date date;
-    private UUID userId;
-    private UUID categoryId;
+    private AppUserDTO appUserDTO;
+    private Category category;
 }

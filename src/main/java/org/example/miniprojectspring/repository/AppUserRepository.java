@@ -2,18 +2,22 @@ package org.example.miniprojectspring.repository;
 
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
-import org.example.miniprojectspring.exception.UuidTypeHandler;
+
+import org.example.miniprojectspring.configuration.UUIDTypeHandler;
 import org.example.miniprojectspring.model.entity.AppUser;
-import org.example.miniprojectspring.model.entity.AppUserDTO;
+import org.example.miniprojectspring.model.dto.AppUserDTO;
 import org.example.miniprojectspring.model.request.AppUserRequest;
-import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.UUID;
 
 @Mapper
 public interface AppUserRepository {
-    @Results(id = "AppUserMapping", value = {
-            @Result(property = "profileImage", column = "profile_image"),
-            @Result(property = "userId", column = "user_id", jdbcType = JdbcType.OTHER, typeHandler = UuidTypeHandler.class)})
-
+    @Results(id = "userMapping", value = {
+            @Result(column = "user_id", property = "userId", javaType = UUID.class, jdbcType = JdbcType.OTHER, typeHandler = UUIDTypeHandler.class),
+            @Result(property = "email", column = "email"),
+            @Result(property = "password", column = "password"),
+            @Result(property = "profileImage", column = "profile_image")
+    })
     @Select("""
             INSERT INTO users  VALUES (DEFAULT,DEFAULT,#{user.email} , #{user.password},#{user.profileImage}) RETURNING *
             """)
@@ -22,6 +26,13 @@ public interface AppUserRepository {
     @Select("""
             SELECT * FROM users WHERE email = #{email}
             """)
-    @ResultMap("AppUserMapping")
+    @ResultMap("userMapping")
     AppUserDTO findByEmail(@Param("email") String email);
+
+
+    @Select("""
+            SELECT * FROM users WHERE user_id = #{userId}::uuid
+            """)
+    @ResultMap("userMapping")
+    AppUserDTO findUserById(UUID userId);
 }

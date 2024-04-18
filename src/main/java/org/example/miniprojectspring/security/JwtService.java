@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.example.miniprojectspring.model.entity.AppUserDTO;
+import org.example.miniprojectspring.model.dto.AppUserDTO;
 import org.example.miniprojectspring.model.entity.CustomUserDetail;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;

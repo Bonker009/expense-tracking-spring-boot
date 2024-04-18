@@ -1,8 +1,9 @@
-package org.example.miniprojectspring.service;
+package org.example.miniprojectspring.service.ServiceImplementation;
 
 import lombok.Data;
-import org.example.miniprojectspring.model.entity.OptsDTO;
+import org.example.miniprojectspring.model.dto.OptsDTO;
 import org.example.miniprojectspring.repository.OneTimePasswordRepository;
+import org.example.miniprojectspring.service.OptService;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

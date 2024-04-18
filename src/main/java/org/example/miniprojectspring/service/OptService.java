@@ -1,6 +1,6 @@
 package org.example.miniprojectspring.service;
 
-import org.example.miniprojectspring.model.entity.OptsDTO;
+import org.example.miniprojectspring.model.dto.OptsDTO;
 
 import java.util.Optional;
 
